@@ -12,35 +12,64 @@ func checkErr(e error) {
 	}
 }
 
-func main() {
-	data, err := os.Open("./input.txt")
-	checkErr(err)
+var m map[string]int = map[string]int{
+	"one":   1,
+	"two":   2,
+	"three": 3,
+	"four":  4,
+	"five":  5,
+	"six":   6,
+	"seven": 7,
+	"eight": 8,
+	"nine":  9,
+}
 
-	scanner := bufio.NewScanner(data)
+func assignVal(val int, firstNum *int, secondNum *int) {
+	if *firstNum == -1 {
+		*firstNum = val
+	}
+
+	*secondNum = val
+}
+
+func solve(scanner *bufio.Scanner) {
 	var totalSum int
 
 	for scanner.Scan() {
 		input := scanner.Text()
 		firstNum, secondNum := -1, -1
 
-		for _, char := range input {
+		for i := 0; i < len(input); i++ {
 
-			asciiChar := char - '0'
+			for j := 3; j <= 5; j++ {
+				if i+j <= len(input) {
+					substr := input[i:i+j]
 
-			if int(asciiChar) <= 9 {
-				if firstNum == -1 {
-					firstNum = int(asciiChar)
-				}
+					val, ok := m[substr]
+					if !ok {
+						continue
+					} else {
+						assignVal(val, &firstNum, &secondNum)
+					}
+				} else {break}
+			}
 
-				secondNum = int(asciiChar)
+			if 1 <= int(input[i]-'0') && int(input[i]-'0') <= 9 {
+				assignVal(int(input[i]-'0'), &firstNum, &secondNum)
 			}
 		}
-
-		firstNum = firstNum*10 + secondNum
-		totalSum += firstNum
-
-		// fmt.Print(firstNum+11, "\n")
+		totalSum += firstNum*10 + secondNum
+		fmt.Println(firstNum*10 + secondNum)
 	}
 
-	fmt.Print(totalSum + 11)
+	fmt.Print(totalSum+11)
+}
+
+func main() {
+	data, err := os.Open("./input.txt")
+	checkErr(err)
+
+	scanner := bufio.NewScanner(data)
+
+	solve(scanner)
 }
