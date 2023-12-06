@@ -7,12 +7,12 @@ import (
 	"strings"
 )
 
-func filterWhiteSpaces(arr []string) []string {
-	var res []string
+func filterWhiteSpace(st string) string {
+	var res string
 
-	for _, str := range(arr) {
-		if strings.TrimSpace(str) != "" {
-			res = append(res, str)
+	for _, str := range st {
+		if str != ' ' {
+			res += string(str)
 		}
 	}
 	return res
@@ -26,30 +26,26 @@ func main() {
 	input := string(inputFile)
 	inputString := strings.Split(input, "\n")
 
-	timeVector := strings.Split(strings.TrimSpace(strings.Split(inputString[0], ":")[1]), " ")
-	distanceVector := strings.Split(strings.TrimSpace(strings.Split(inputString[1], ":")[1]), " ")
+	timeString := strings.Split(inputString[0], ":")[1]
+	distanceString := strings.Split(inputString[1], ":")[1]
 
-	timeVector = filterWhiteSpaces(timeVector);
-	distanceVector = filterWhiteSpaces(distanceVector);
+	timeString = filterWhiteSpace(timeString)
+	distanceString = filterWhiteSpace(distanceString)
 
+	targetDistance, _ := strconv.Atoi(distanceString)
+	startTime, _ := strconv.Atoi(timeString)
 
-	for i := 0; i < len(timeVector); i++ {
-		targetDistance, _ := strconv.Atoi(distanceVector[i])
-		startTime, _ := strconv.Atoi(timeVector[i])
-		
+	for j := 1; j <= startTime/2; j++ {
+		if j*(startTime-j) > targetDistance {
+			pairs := (startTime/2 - j + 1) * 2
 
-		for j := 1; j <= startTime/2; j++ {
-			if j*(startTime-j) > targetDistance {
-				pairs := (startTime/2 - j + 1)*2
-
-				if startTime%2 == 0 {pairs -= 1}
-				totalProduct *= pairs
-				break
+			if startTime%2 == 0 {
+				pairs -= 1
 			}
+			totalProduct *= pairs
+			break
 		}
 	}
 
-	// fmt.Println(timeVector)
-	// fmt.Println(distanceVector)
 	fmt.Println(totalProduct)
 }
